@@ -1,4 +1,11 @@
 [package]
 name = "permutohedron"
 version = "0.1.0"
-authors = ["root <root@localhost>"]
+authors = ["bluss"]
+
+license = "MIT/Apache-2.0"
+repository = "https://github.com/bluss/permutohedron"
+
+description = "Generate permutations of sequences. Implemented using Heap's algorithm."
+
+keywords = ["permutations", "heaps-algorithm"]
