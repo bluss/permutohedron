@@ -26,6 +26,16 @@ How to use with cargo::
 Recent Changes
 --------------
 
+- 0.1.1
+
+  - Add heap_recursive, a faster callback-based version of Heap's algorithm
+    that can compute permutations of a sequence.
+
+- 0.1.0
+
+  - Add Heap, an iterative walker & iterator using Heap's algorithm to
+    compute permutations of a sequence.
+
 License
 -------
 
