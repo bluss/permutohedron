@@ -9,3 +9,6 @@ repository = "https://github.com/bluss/permutohedron"
 description = "Generate permutations of sequences. Implemented using Heap's algorithm."
 
 keywords = ["permutations", "heaps-algorithm"]
+
+[profile.bench]
+debug = true
