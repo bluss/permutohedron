@@ -1,23 +1,44 @@
-#![allow(dead_code)]
 use std::marker::PhantomData;
 
-/// Heap's algorithm for generating permutations,
-/// recursive version.
-fn heap<T, F>(xs: &mut [T], mut f: F) where F: FnMut(&mut [T])
+/// Heap's algorithm for generating permutations, recursive version.
+///
+/// The recursive algorithm supports slices of any size (even though
+/// only a small number of elements is practical), and is generally
+/// much faster than the iterative version.
+pub fn heap_recursive<T, F>(xs: &mut [T], mut f: F) where F: FnMut(&mut [T])
 {
-    heap_(xs.len(), xs, &mut f);
+    heap_unrolled_(xs.len(), xs, &mut f);
 }
 
-fn heap_<T>(n: usize, xs: &mut [T], f: &mut FnMut(&mut [T]))
-{
-    if n <= 1 {
-        f(xs);
-        return;
-    }
-    for i in 0..n {
-        heap_(n - 1, xs, f);
-        let j = if n % 2 == 0 { i } else { 0 };
-        xs.swap(j, n - 1);
+/// Unrolled version of heap's algorithm due to Sedgewick
+fn heap_unrolled_<T>(n: usize, xs: &mut [T], f: &mut FnMut(&mut [T])) {
+    match n {
+        0 | 1 => f(xs),
+        2 => {
+            // [1, 2], [2, 1]
+            f(xs);
+            xs.swap(0, 1);
+            f(xs);
+        }
+        3 => {
+            // [1, 2, 3], [2, 1, 3], [3, 1, 2], [1, 3, 2], [2, 3, 1], [3, 2, 1]
+            f(xs);
+            xs.swap(0, 1);
+            f(xs);
+            xs.swap(0, 2);
+            f(xs);
+            xs.swap(0, 1);
+            f(xs);
+            xs.swap(0, 2);
+            f(xs);
+            xs.swap(0, 1);
+            f(xs);
+        }
+        n => for i in 0..n {
+            heap_unrolled_(n - 1, xs, f);
+            let j = if n % 2 == 0 { i } else { 0 };
+            xs.swap(j, n - 1);
+        }
     }
 }
 
@@ -141,27 +162,8 @@ fn first_and_reset() {
     assert_eq!(heap.by_ref().collect::<Vec<_>>(), perm123);
 }
 
-/*
 #[test]
-fn test_reset() {
-    // test that `reset_reverse` restores the data in original order
-    let mut data = [3, 1, 2, 4];
-    let orig = data;
-    for n in 0..factorial(data.len()) {
-        {
-            let mut heap = Heap::new(&mut data);
-            for _ in 0..n {
-                heap.next_permutation();
-            }
-            heap.reset_reverse();
-            heap.reset_reverse();
-        }
-    }
-}
-*/
-
-#[test]
-fn permutations_0_to_5() {
+fn permutations_0_to_6() {
     let mut data = [0; 6];
     for n in 0..data.len() {
         let count = factorial(n);
@@ -170,7 +172,27 @@ fn permutations_0_to_5() {
         }
         let mut permutations = Heap::new(&mut data[..n]).collect::<Vec<_>>();
         assert_eq!(permutations.len(), count);
-        //println!("{:?}", permutations);
+        permutations.sort();
+        permutations.dedup();
+        assert_eq!(permutations.len(), count);
+        // Each permutation contains all of 1 to n
+        assert!(permutations.iter().all(|perm| perm.len() == n));
+        assert!(permutations.iter().all(|perm| (1..n + 1).all(|i| perm.iter().position(|elt| *elt == i).is_some())));
+    }
+}
+
+#[test]
+fn permutations_0_to_6_recursive() {
+    let mut data = [0; 6];
+    for n in 0..data.len() {
+        let count = factorial(n);
+        for (index, elt) in data.iter_mut().enumerate() {
+            *elt = index + 1;
+        }
+        let mut permutations = Vec::with_capacity(count);
+        heap_recursive(&mut data[..n], |elt| permutations.push(elt.to_owned()));
+        println!("{:?}", permutations);
+        assert_eq!(permutations.len(), count);
         permutations.sort();
         permutations.dedup();
         assert_eq!(permutations.len(), count);
