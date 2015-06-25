@@ -75,18 +75,20 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
         }
     }
 
+    /// Return a reference to the inner data
+    pub fn get(&self) -> &Data {
+        self.data
+    }
+
     /// Return a mutable reference to the inner data
     pub fn get_mut(&mut self) -> &mut Data {
         self.data
     }
 
-    /// Reset the permutations walker, and the order of the data.
-    ///
-    /// Note: This will run through all remaining permutations,
-    /// which may be very many.
-    fn reset_reverse(&mut self) {
-        // spin to the end, then reset all variables
-        while let Some(_) = self.next_permutation() { }
+    /// Reset the permutations walker, without changing the data. It allows
+    /// generating permutations again with the current state as starting
+    /// point.
+    pub fn reset(&mut self) {
         self.n = 0;
         for c in &mut self.c[..] { *c = 0; }
         self.index = 0;
@@ -119,8 +121,6 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
                     self.n += 1;
                 }
             }
-            // Note: The last permutation visited has all elements in
-            // reverse order from the starting configuration.
             None
         }
     }
@@ -156,8 +156,9 @@ fn first_and_reset() {
     let mut perm123 = vec![[1, 2, 3], [2, 1, 3], [3, 1, 2], [1, 3, 2], [2, 3, 1], [3, 2, 1]];
     assert_eq!(heap.by_ref().collect::<Vec<_>>(), perm123);
 
-    // test reset_reverse -- dubious
-    heap.reset_reverse();
+    // test reset
+    heap.reset();
+    // for the 1,2,3 case this happens to work out to the reverse order
     perm123.reverse();
     assert_eq!(heap.by_ref().collect::<Vec<_>>(), perm123);
 }
