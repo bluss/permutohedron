@@ -43,7 +43,7 @@ fn heap_unrolled_<T>(n: usize, xs: &mut [T], f: &mut FnMut(&mut [T])) {
 }
 
 /// Maximum number of elements we can generate permutations for using
-/// Heap's algorithm
+/// Heap's algorithm (iterative version).
 pub const MAXHEAP: usize = 16;
 
 /// Heap's algorithm for generating permutations.
@@ -54,7 +54,7 @@ pub const MAXHEAP: usize = 16;
 pub struct Heap<'a, Data: 'a + ?Sized, T: 'a> {
     data: &'a mut Data,
     c: [u8; MAXHEAP],
-    n: u8,
+    n: usize,
     // we can store up to 20! in 64 bits.
     index: u64,
     _element: PhantomData<&'a mut T>
@@ -104,14 +104,14 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
             self.index += 1;
             Some(self.data)
         } else {
-            while (self.n as usize) < self.data.as_mut().len() {
-                let n = self.n;
-                let nu = self.n as usize;
+            while self.n < self.data.as_mut().len() {
+                let nb = self.n as u8;
+                let nu = self.n;
                 let c = &mut self.c;
-                if c[nu] < n {
+                if c[nu] < nb {
                     // `n` acts like the current length - 1 of the slice we are permuting
                     // `c[n]` acts like `i` in the recursive algorithm
-                    let j = if (n + 1) % 2 == 0 { c[nu] as usize } else { 0 };
+                    let j = if (nu + 1) % 2 == 0 { c[nu] as usize } else { 0 };
                     self.data.as_mut().swap(j, nu);
                     c[nu] += 1;
                     self.n = 0;
