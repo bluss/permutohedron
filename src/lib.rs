@@ -10,6 +10,9 @@ pub fn heap_recursive<T, F>(xs: &mut [T], mut f: F) where F: FnMut(&mut [T])
     heap_unrolled_(xs.len(), xs, &mut f);
 }
 
+// TODO: Find a more parallel version with less data dependencies:
+// i.e. don't swap the same items (for example index 0) every time.
+
 /// Unrolled version of heap's algorithm due to Sedgewick
 fn heap_unrolled_<T>(n: usize, xs: &mut [T], f: &mut FnMut(&mut [T])) {
     match n {
