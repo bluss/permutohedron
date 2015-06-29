@@ -26,6 +26,10 @@ How to use with cargo::
 Recent Changes
 --------------
 
+- 0.1.3
+
+  - Fix an error in heap_recursive
+
 - 0.1.1
 
   - Add heap_recursive, a faster callback-based version of Heap's algorithm
