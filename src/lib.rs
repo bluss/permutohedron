@@ -37,10 +37,14 @@ fn heap_unrolled_<T>(n: usize, xs: &mut [T], f: &mut FnMut(&mut [T])) {
             xs.swap(0, 1);
             f(xs);
         }
-        n => for i in 0..n {
+        n => {
+            for i in 0..n - 1 {
+                heap_unrolled_(n - 1, xs, f);
+                let j = if n % 2 == 0 { i } else { 0 };
+                // One swap *between* each iteration.
+                xs.swap(j, n - 1);
+            }
             heap_unrolled_(n - 1, xs, f);
-            let j = if n % 2 == 0 { i } else { 0 };
-            xs.swap(j, n - 1);
         }
     }
 }
