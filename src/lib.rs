@@ -194,6 +194,33 @@ fn permutations_0_to_6() {
 }
 
 #[test]
+fn count_permutations_iter() {
+    let mut data = [0; 10];
+    for n in 0..data.len() + 1 {
+        let count = factorial(n);
+        let mut permutations = Heap::new(&mut data[..n]);
+        let mut i = 0;
+        while let Some(_) = permutations.next_permutation() {
+            i += 1;
+        }
+        assert_eq!(i, count);
+        println!("{}! = {} ok", n, count);
+    }
+}
+
+#[test]
+fn count_permutations_recur() {
+    let mut data = [0; 10];
+    for n in 0..data.len() + 1 {
+        let count = factorial(n);
+        let mut i = 0;
+        heap_recursive(&mut data[..n], |_| i += 1);
+        assert_eq!(i, count);
+        println!("{}! = {} ok", n, count);
+    }
+}
+
+#[test]
 fn permutations_0_to_6_recursive() {
     let mut data = [0; 6];
     for n in 0..data.len() {
