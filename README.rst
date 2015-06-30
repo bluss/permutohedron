@@ -26,6 +26,10 @@ How to use with cargo::
 Recent Changes
 --------------
 
+- 0.1.4
+
+  - Optimizations for Heap
+
 - 0.1.3
 
   - Fix an error in heap_recursive
