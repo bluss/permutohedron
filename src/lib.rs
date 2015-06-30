@@ -7,15 +7,7 @@ use std::marker::PhantomData;
 /// much faster than the iterative version.
 pub fn heap_recursive<T, F>(xs: &mut [T], mut f: F) where F: FnMut(&mut [T])
 {
-    heap_unrolled_(xs.len(), xs, &mut f);
-}
-
-// TODO: Find a more parallel version with less data dependencies:
-// i.e. don't swap the same items (for example index 0) every time.
-
-/// Unrolled version of heap's algorithm due to Sedgewick
-fn heap_unrolled_<T>(n: usize, xs: &mut [T], f: &mut FnMut(&mut [T])) {
-    match n {
+    match xs.len() {
         0 | 1 => f(xs),
         2 => {
             // [1, 2], [2, 1]
@@ -23,6 +15,17 @@ fn heap_unrolled_<T>(n: usize, xs: &mut [T], f: &mut FnMut(&mut [T])) {
             xs.swap(0, 1);
             f(xs);
         }
+        n => heap_unrolled_(n, xs, &mut f),
+    }
+}
+
+// TODO: Find a more parallel version with less data dependencies:
+// i.e. don't swap the same items (for example index 0) every time.
+
+/// Unrolled version of heap's algorithm due to Sedgewick
+fn heap_unrolled_<T>(n: usize, xs: &mut [T], f: &mut FnMut(&mut [T])) {
+    debug_assert!(n >= 3);
+    match n {
         3 => {
             // [1, 2, 3], [2, 1, 3], [3, 1, 2], [1, 3, 2], [2, 3, 1], [3, 2, 1]
             f(xs);
