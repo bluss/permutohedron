@@ -63,8 +63,9 @@ pub const MAXHEAP: usize = 16;
 /// Note that for *n* elements there are *n!* (*n* factorial) permutations.
 pub struct Heap<'a, Data: 'a + ?Sized, T: 'a> {
     data: &'a mut Data,
-    c: [u8; MAXHEAP],
-    n: usize,
+    // c, and n: u8 would be enough range, but u32 performs better
+    c: [u32; MAXHEAP],
+    n: u32,
     // we can store up to 20! in 64 bits.
     index: u64,
     _element: PhantomData<&'a mut T>
@@ -114,14 +115,14 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
             self.index = 1;
             Some(self.data)
         } else {
-            while self.n < self.data.as_mut().len() {
-                let nb = self.n as u8;
-                let nu = self.n;
+            while (self.n as usize) < self.data.as_mut().len() {
+                let n = self.n;
+                let nu = self.n as usize;
                 let c = &mut self.c;
-                if c[nu] < nb {
+                if c[nu] < n {
                     // `n` acts like the current length - 1 of the slice we are permuting
                     // `c[n]` acts like `i` in the recursive algorithm
-                    let j = if (nu + 1) % 2 == 0 { c[nu] as usize } else { 0 };
+                    let j = if (n + 1) % 2 == 0 { c[nu] as usize } else { 0 };
                     self.data.as_mut().swap(j, nu);
                     c[nu] += 1;
                     self.n = 1;
