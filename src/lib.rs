@@ -4,7 +4,7 @@ use std::marker::PhantomData;
 ///
 /// The recursive algorithm supports slices of any size (even though
 /// only a small number of elements is practical), and is generally
-/// much faster than the iterative version.
+/// a bit faster than the iterative version.
 pub fn heap_recursive<T, F>(xs: &mut [T], mut f: F) where F: FnMut(&mut [T])
 {
     match xs.len() {
@@ -61,13 +61,14 @@ pub const MAXHEAP: usize = 16;
 /// An iterative method of generating all permutations of a sequence.
 ///
 /// Note that for *n* elements there are *n!* (*n* factorial) permutations.
+// lock the repr since it performs the best in this order..(?)
+#[repr(C)]
 pub struct Heap<'a, Data: 'a + ?Sized, T: 'a> {
     data: &'a mut Data,
+    n: u32,
+    index: u32,
     // c, and n: u8 would be enough range, but u32 performs better
     c: [u32; MAXHEAP],
-    n: u32,
-    // we can store up to 20! in 64 bits.
-    index: u64,
     _element: PhantomData<&'a mut T>
 }
 
@@ -116,7 +117,7 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
             Some(self.data)
         } else {
             while (self.n as usize) < self.data.as_mut().len() {
-                let n = self.n;
+                let n = self.n as u32;
                 let nu = self.n as usize;
                 let c = &mut self.c;
                 if c[nu] < n {
