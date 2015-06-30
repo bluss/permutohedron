@@ -65,11 +65,12 @@ pub const MAXHEAP: usize = 16;
 #[repr(C)]
 pub struct Heap<'a, Data: 'a + ?Sized, T: 'a> {
     data: &'a mut Data,
+    // c, and n: u8 is enough range.
+    // u32 performs better for n, u8 for c.
     // n: == !0 at start, 0 after first permutation is emitted
     n: u32,
-    // c, and n: u8 would be enough range, but u32 performs better
     // c[x] is the counter for the (x + 1) th location
-    c: [u32; MAXHEAP - 1],
+    c: [u8; MAXHEAP - 1],
     _element: PhantomData<&'a mut T>
 }
 
@@ -116,7 +117,7 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
             Some(self.data)
         } else {
             while 1 + (self.n as usize) < self.data.as_mut().len() {
-                let n = self.n as u32;
+                let n = self.n as u8;
                 let nu = self.n as usize;
                 let c = &mut self.c;
                 if c[nu] <= n {
