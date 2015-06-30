@@ -79,7 +79,7 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
         Heap {
             data: data,
             c: [0; MAXHEAP],
-            n: 0,
+            n: 1,
             index: 0,
             _element: PhantomData,
         }
@@ -99,7 +99,7 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
     /// generating permutations again with the current state as starting
     /// point.
     pub fn reset(&mut self) {
-        self.n = 0;
+        self.n = 1;
         for c in &mut self.c[..] { *c = 0; }
         self.index = 0;
     }
@@ -111,7 +111,7 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
     /// Note that for *n* elements there are *n!* (*n* factorial) permutations.
     pub fn next_permutation(&mut self) -> Option<&mut Data> {
         if self.index == 0 {
-            self.index += 1;
+            self.index = 1;
             Some(self.data)
         } else {
             while self.n < self.data.as_mut().len() {
@@ -124,7 +124,7 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
                     let j = if (nu + 1) % 2 == 0 { c[nu] as usize } else { 0 };
                     self.data.as_mut().swap(j, nu);
                     c[nu] += 1;
-                    self.n = 0;
+                    self.n = 1;
                     return Some(self.data);
                 } else {
                     c[nu] = 0;
