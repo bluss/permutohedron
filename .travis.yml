@@ -5,6 +5,8 @@ matrix:
     - rust: stable
     - rust: beta
     - rust: nightly
+      env:
+        - BENCH=1
 branches:
   only:
     - master
