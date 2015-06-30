@@ -65,10 +65,11 @@ pub const MAXHEAP: usize = 16;
 #[repr(C)]
 pub struct Heap<'a, Data: 'a + ?Sized, T: 'a> {
     data: &'a mut Data,
+    // n: == !0 at start, 0 after first permutation is emitted
     n: u32,
-    index: u32,
     // c, and n: u8 would be enough range, but u32 performs better
-    c: [u32; MAXHEAP],
+    // c[x] is the counter for the (x + 1) th location
+    c: [u32; MAXHEAP - 1],
     _element: PhantomData<&'a mut T>
 }
 
@@ -80,9 +81,8 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
         assert!(data.as_mut().len() <= MAXHEAP);
         Heap {
             data: data,
-            c: [0; MAXHEAP],
-            n: 1,
-            index: 0,
+            c: [0; MAXHEAP - 1],
+            n: !0,
             _element: PhantomData,
         }
     }
@@ -101,9 +101,8 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
     /// generating permutations again with the current state as starting
     /// point.
     pub fn reset(&mut self) {
-        self.n = 1;
+        self.n = !0;
         for c in &mut self.c[..] { *c = 0; }
-        self.index = 0;
     }
 
     /// Step the internal data into the next permutation and return
@@ -112,21 +111,21 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
     ///
     /// Note that for *n* elements there are *n!* (*n* factorial) permutations.
     pub fn next_permutation(&mut self) -> Option<&mut Data> {
-        if self.index == 0 {
-            self.index = 1;
+        if self.n == !0 {
+            self.n = 0;
             Some(self.data)
         } else {
-            while (self.n as usize) < self.data.as_mut().len() {
+            while 1 + (self.n as usize) < self.data.as_mut().len() {
                 let n = self.n as u32;
                 let nu = self.n as usize;
                 let c = &mut self.c;
-                if c[nu] < n {
-                    // `n` acts like the current length - 1 of the slice we are permuting
+                if c[nu] <= n {
+                    // `n` acts like the current length - 2 of the slice we are permuting
                     // `c[n]` acts like `i` in the recursive algorithm
-                    let j = if (n + 1) % 2 == 0 { c[nu] as usize } else { 0 };
-                    self.data.as_mut().swap(j, nu);
+                    let j = if nu % 2 == 0 { c[nu] as usize } else { 0 };
+                    self.data.as_mut().swap(j, nu + 1);
                     c[nu] += 1;
-                    self.n = 1;
+                    self.n = 0;
                     return Some(self.data);
                 } else {
                     c[nu] = 0;
