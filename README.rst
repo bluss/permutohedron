@@ -26,6 +26,10 @@ How to use with cargo::
 Recent Changes
 --------------
 
+- 0.1.5
+
+  - Cache-use / data layout optimizations for Heap
+
 - 0.1.4
 
   - Optimizations for Heap
