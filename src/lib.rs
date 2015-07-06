@@ -23,7 +23,9 @@ pub fn heap_recursive<T, F>(xs: &mut [T], mut f: F) where F: FnMut(&mut [T])
 // i.e. don't swap the same items (for example index 0) every time.
 
 /// Unrolled version of heap's algorithm due to Sedgewick
-fn heap_unrolled_<T>(n: usize, xs: &mut [T], f: &mut FnMut(&mut [T])) {
+fn heap_unrolled_<T, F>(n: usize, xs: &mut [T], f: &mut F)
+    where F: FnMut(&mut [T])
+{
     debug_assert!(n >= 3);
     match n {
         3 => {
