@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["MAXHEAP","Maximum number of elements we can generate permutations for using Heap's algorithm (iterative version)."]],"fn":[["factorial","Compute *n!* (*n* factorial)"],["heap_recursive","Heap's algorithm for generating permutations, recursive version."]],"struct":[["Heap","Heap's algorithm for generating permutations."]]});
