@@ -4,11 +4,9 @@ permutohedron
 
 Generate permutations of sequences.
 
-**Note: docs are not available yet.**
-
 Please read the `API documentation here`__
 
-__ http://bluss.github.io/permutohedron
+__ http://bluss.github.io/permutohedron/
 
 |build_status|_ |crates|_
 
