@@ -1,5 +1,9 @@
 use std::marker::PhantomData;
 
+pub use lexical::LexicalPermutation;
+
+mod lexical;
+
 /// Heap's algorithm for generating permutations, recursive version.
 ///
 /// The recursive algorithm supports slices of any size (even though
