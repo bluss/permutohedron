@@ -4,11 +4,9 @@ permutohedron
 
 Generate permutations of sequences.
 
-**Note: docs are not available yet.**
-
 Please read the `API documentation here`__
 
-__ http://bluss.github.io/permutohedron
+__ http://bluss.github.io/permutohedron/
 
 |build_status|_ |crates|_
 
@@ -21,10 +19,15 @@ __ http://bluss.github.io/permutohedron
 How to use with cargo::
 
     [dependencies]
-    permutohedron = "0.1"
+    permutohedron = "0.2"
 
 Recent Changes
 --------------
+
+- 0.2.0
+
+  - Add trait LexicalPermutation for lexicographical order of permutations,
+    from Rust's libcore
 
 - 0.1.6
 

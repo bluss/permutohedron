@@ -1,16 +1,15 @@
 [package]
 name = "permutohedron"
-version = "0.1.7"
+version = "0.2.0"
 authors = ["bluss"]
 
 license = "MIT/Apache-2.0"
 repository = "https://github.com/bluss/permutohedron"
-documentation = "http://bluss.github.io/permutohedron"
+documentation = "http://bluss.github.io/permutohedron/"
 
+description = "Generate permutations of sequences. Either lexicographical order permutations, or a minimal swaps permutation sequence implemented using Heap's algorithm."
 
-description = "Generate permutations of sequences. Implemented using Heap's algorithm."
-
-keywords = ["permutations", "heaps-algorithm"]
+keywords = ["permutations", "heaps-algorithm", "lexicographic"]
 
 [profile.bench]
 debug = true
