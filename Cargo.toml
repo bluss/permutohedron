@@ -9,7 +9,7 @@ documentation = "http://bluss.github.io/permutohedron/"
 
 description = "Generate permutations of sequences. Either lexicographical order permutations, or a minimal swaps permutation sequence implemented using Heap's algorithm."
 
-keywords = ["permutations", "heaps-algorithm", "lexicographic-permutations"]
+keywords = ["permutations", "heaps-algorithm", "lexicographic"]
 
 [profile.bench]
 debug = true
