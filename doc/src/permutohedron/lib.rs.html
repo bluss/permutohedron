@@ -9,6 +9,7 @@
 
     <title>lib.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
 
     
@@ -24,10 +25,10 @@
 
     
 
-    <section class="sidebar">
+    <nav class="sidebar">
         
         
-    </section>
+    </nav>
 
     <nav class="sub">
         <form class="search-form js-only">
@@ -285,8 +286,14 @@
 <span id="243">243</span>
 <span id="244">244</span>
 <span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>;
+
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>lexical</span>::<span class='ident'>LexicalPermutation</span>;
+
+<span class='kw'>mod</span> <span class='ident'>lexical</span>;
 
 <span class='doccomment'>/// Heap&#39;s algorithm for generating permutations, recursive version.</span>
 <span class='doccomment'>///</span>
@@ -446,9 +453,7 @@
 
 <span class='doccomment'>/// Compute *n!* (*n* factorial)</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>factorial</span>(<span class='ident'>n</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>prod</span> <span class='op'>=</span> <span class='number'>1</span>;
-    <span class='kw'>for</span> <span class='ident'>x</span> <span class='kw'>in</span> <span class='number'>1</span>..<span class='ident'>n</span> <span class='op'>+</span> <span class='number'>1</span> { <span class='ident'>prod</span> <span class='op'>*=</span> <span class='ident'>x</span>; }
-    <span class='ident'>prod</span>
+    (<span class='number'>1</span>..<span class='ident'>n</span> <span class='op'>+</span> <span class='number'>1</span>).<span class='ident'>fold</span>(<span class='number'>1</span>, <span class='op'>|</span><span class='ident'>a</span>, <span class='ident'>b</span><span class='op'>|</span> <span class='ident'>a</span> <span class='op'>*</span> <span class='ident'>b</span>)
 }
 
 <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -537,10 +542,12 @@
 
     <section class="footer"></section>
 
-    <div id="help" class="hidden">
+    <aside id="help" class="hidden">
         <div>
+            <h1 class="hidden">Help</h1>
+
             <div class="shortcuts">
-                <h1>Keyboard Shortcuts</h1>
+                <h2>Keyboard Shortcuts</h2>
 
                 <dl>
                     <dt>?</dt>
@@ -557,7 +564,7 @@
             </div>
 
             <div class="infos">
-                <h1>Search Tricks</h1>
+                <h2>Search Tricks</h2>
 
                 <p>
                     Prefix searches with a type followed by a colon (e.g.
@@ -577,7 +584,7 @@
                 </p>
             </div>
         </div>
-    </div>
+    </aside>
 
     
 
@@ -589,6 +596,6 @@
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     
-    <script async src="../../search-index.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>
