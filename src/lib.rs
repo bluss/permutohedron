@@ -1,5 +1,9 @@
 use std::marker::PhantomData;
 
+pub use lexical::LexicalPermutation;
+
+mod lexical;
+
 /// Heap's algorithm for generating permutations, recursive version.
 ///
 /// The recursive algorithm supports slices of any size (even though
@@ -158,9 +162,7 @@ impl<'a, Data: ?Sized, T> Iterator for Heap<'a, Data, T>
 
 /// Compute *n!* (*n* factorial)
 pub fn factorial(n: usize) -> usize {
-    let mut prod = 1;
-    for x in 1..n + 1 { prod *= x; }
-    prod
+    (1..n + 1).fold(1, |a, b| a * b)
 }
 
 #[test]
