@@ -1,3 +1,15 @@
+#![cfg_attr(not(feature = "std"), no_std)]
+
+//!
+//! ## Crate Feature Flags
+//!
+//! - `std`
+//!   + Default. Disabling `std` requires Rust 1.6 or later
+//!   + Disabling `std` makes the crate a `#![no_std]` crate (works with core)
+
+#[cfg(not(feature = "std"))]
+extern crate core as std;
+
 use std::marker::PhantomData;
 
 pub use lexical::LexicalPermutation;
@@ -144,6 +156,7 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
     }
 }
 
+#[cfg(feature = "std")]
 /// Iterate the permutations
 ///
 /// **Note:** You can also generate the permutations lazily by using
@@ -165,83 +178,87 @@ pub fn factorial(n: usize) -> usize {
     (1..n + 1).fold(1, |a, b| a * b)
 }
 
-#[test]
-fn first_and_reset() {
-    let mut data = [1, 2, 3];
-    let mut heap = Heap::new(&mut data);
-    let mut perm123 = vec![[1, 2, 3], [2, 1, 3], [3, 1, 2], [1, 3, 2], [2, 3, 1], [3, 2, 1]];
-    assert_eq!(heap.by_ref().collect::<Vec<_>>(), perm123);
+#[cfg(feature = "std")]
+mod tests {
+    use super::*;
+    #[test]
+    fn first_and_reset() {
+        let mut data = [1, 2, 3];
+        let mut heap = Heap::new(&mut data);
+        let mut perm123 = vec![[1, 2, 3], [2, 1, 3], [3, 1, 2], [1, 3, 2], [2, 3, 1], [3, 2, 1]];
+        assert_eq!(heap.by_ref().collect::<Vec<_>>(), perm123);
 
-    // test reset
-    heap.reset();
-    // for the 1,2,3 case this happens to work out to the reverse order
-    perm123.reverse();
-    assert_eq!(heap.by_ref().collect::<Vec<_>>(), perm123);
-}
-
-#[test]
-fn permutations_0_to_6() {
-    let mut data = [0; 6];
-    for n in 0..data.len() {
-        let count = factorial(n);
-        for (index, elt) in data.iter_mut().enumerate() {
-            *elt = index + 1;
-        }
-        let mut permutations = Heap::new(&mut data[..n]).collect::<Vec<_>>();
-        assert_eq!(permutations.len(), count);
-        permutations.sort();
-        permutations.dedup();
-        assert_eq!(permutations.len(), count);
-        // Each permutation contains all of 1 to n
-        assert!(permutations.iter().all(|perm| perm.len() == n));
-        assert!(permutations.iter().all(|perm| (1..n + 1).all(|i| perm.iter().position(|elt| *elt == i).is_some())));
+        // test reset
+        heap.reset();
+        // for the 1,2,3 case this happens to work out to the reverse order
+        perm123.reverse();
+        assert_eq!(heap.by_ref().collect::<Vec<_>>(), perm123);
     }
-}
 
-#[test]
-fn count_permutations_iter() {
-    let mut data = [0; 10];
-    for n in 0..data.len() + 1 {
-        let count = factorial(n);
-        let mut permutations = Heap::new(&mut data[..n]);
-        let mut i = 0;
-        while let Some(_) = permutations.next_permutation() {
-            i += 1;
+    #[test]
+    fn permutations_0_to_6() {
+        let mut data = [0; 6];
+        for n in 0..data.len() {
+            let count = factorial(n);
+            for (index, elt) in data.iter_mut().enumerate() {
+                *elt = index + 1;
+            }
+            let mut permutations = Heap::new(&mut data[..n]).collect::<Vec<_>>();
+            assert_eq!(permutations.len(), count);
+            permutations.sort();
+            permutations.dedup();
+            assert_eq!(permutations.len(), count);
+            // Each permutation contains all of 1 to n
+            assert!(permutations.iter().all(|perm| perm.len() == n));
+            assert!(permutations.iter().all(|perm| (1..n + 1).all(|i| perm.iter().position(|elt| *elt == i).is_some())));
         }
-        assert_eq!(i, count);
-        println!("{}! = {} ok", n, count);
     }
-}
 
-#[test]
-fn count_permutations_recur() {
-    let mut data = [0; 10];
-    for n in 0..data.len() + 1 {
-        let count = factorial(n);
-        let mut i = 0;
-        heap_recursive(&mut data[..n], |_| i += 1);
-        assert_eq!(i, count);
-        println!("{}! = {} ok", n, count);
-    }
-}
-
-#[test]
-fn permutations_0_to_6_recursive() {
-    let mut data = [0; 6];
-    for n in 0..data.len() {
-        let count = factorial(n);
-        for (index, elt) in data.iter_mut().enumerate() {
-            *elt = index + 1;
+    #[test]
+    fn count_permutations_iter() {
+        let mut data = [0; 10];
+        for n in 0..data.len() + 1 {
+            let count = factorial(n);
+            let mut permutations = Heap::new(&mut data[..n]);
+            let mut i = 0;
+            while let Some(_) = permutations.next_permutation() {
+                i += 1;
+            }
+            assert_eq!(i, count);
+            println!("{}! = {} ok", n, count);
         }
-        let mut permutations = Vec::with_capacity(count);
-        heap_recursive(&mut data[..n], |elt| permutations.push(elt.to_owned()));
-        println!("{:?}", permutations);
-        assert_eq!(permutations.len(), count);
-        permutations.sort();
-        permutations.dedup();
-        assert_eq!(permutations.len(), count);
-        // Each permutation contains all of 1 to n
-        assert!(permutations.iter().all(|perm| perm.len() == n));
-        assert!(permutations.iter().all(|perm| (1..n + 1).all(|i| perm.iter().position(|elt| *elt == i).is_some())));
+    }
+
+    #[test]
+    fn count_permutations_recur() {
+        let mut data = [0; 10];
+        for n in 0..data.len() + 1 {
+            let count = factorial(n);
+            let mut i = 0;
+            heap_recursive(&mut data[..n], |_| i += 1);
+            assert_eq!(i, count);
+            println!("{}! = {} ok", n, count);
+        }
+    }
+
+    #[test]
+    fn permutations_0_to_6_recursive() {
+        let mut data = [0; 6];
+        for n in 0..data.len() {
+            let count = factorial(n);
+            for (index, elt) in data.iter_mut().enumerate() {
+                *elt = index + 1;
+            }
+            let mut permutations = Vec::with_capacity(count);
+            heap_recursive(&mut data[..n], |elt| permutations.push(elt.to_owned()));
+            println!("{:?}", permutations);
+            assert_eq!(permutations.len(), count);
+            permutations.sort();
+            permutations.dedup();
+            assert_eq!(permutations.len(), count);
+            // Each permutation contains all of 1 to n
+            assert!(permutations.iter().all(|perm| perm.len() == n));
+            assert!(permutations.iter().all(|perm| (1..n + 1).all(|i| perm.iter().position(|elt| *elt == i).is_some())));
+        }
     }
 }

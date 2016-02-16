@@ -13,3 +13,7 @@ keywords = ["permutations", "heaps-algorithm", "lexicographic"]
 
 [profile.bench]
 debug = true
+
+[features]
+std = []
+default = ["std"]
