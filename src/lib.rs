@@ -178,7 +178,7 @@ pub fn factorial(n: usize) -> usize {
     (1..n + 1).fold(1, |a, b| a * b)
 }
 
-#[cfg(feature = "std")]
+#[cfg(all(test, feature = "std"))]
 mod tests {
     use super::*;
     #[test]
