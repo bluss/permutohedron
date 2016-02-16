@@ -24,6 +24,11 @@ How to use with cargo::
 Recent Changes
 --------------
 
+- 0.2.1
+
+  - Add feature ``std`` (enabled by default) that allows you to opt out of
+    using libstd.
+
 - 0.2.0
 
   - Add trait LexicalPermutation for lexicographical order of permutations,
