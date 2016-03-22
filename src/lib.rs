@@ -21,6 +21,20 @@ mod lexical;
 /// The recursive algorithm supports slices of any size (even though
 /// only a small number of elements is practical), and is generally
 /// a bit faster than the iterative version.
+///
+/// ## Example
+///
+/// ```
+/// use permutohedron::heap_recursive;
+///
+/// let mut data = [1, 2, 3, 4, 5, 6];
+/// let mut permutations = Vec::new();
+/// heap_recursive(&mut data, |permutation| {
+///     permutations.push(permutation.to_vec())
+/// });
+///
+/// assert_eq!(permutations.len(), 720);
+/// ```
 pub fn heap_recursive<T, F>(xs: &mut [T], mut f: F) where F: FnMut(&mut [T])
 {
     match xs.len() {
@@ -79,6 +93,22 @@ pub const MAXHEAP: usize = 16;
 /// An iterative method of generating all permutations of a sequence.
 ///
 /// Note that for *n* elements there are *n!* (*n* factorial) permutations.
+///
+/// ## Example
+///
+/// ```
+/// use permutohedron::Heap;
+///
+/// let mut data = vec![1, 2, 3];
+/// let heap = Heap::new(&mut data);
+///
+/// let mut permutations = Vec::new();
+/// for data in heap {
+///     permutations.push(data.clone());
+/// }
+///
+/// assert_eq!(permutations.len(), 6);
+/// ```
 // lock the repr since it performs the best in this order..(?)
 #[repr(C)]
 pub struct Heap<'a, Data: 'a + ?Sized, T: 'a> {
