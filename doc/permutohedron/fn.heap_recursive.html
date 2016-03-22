@@ -46,14 +46,13 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-23' class='srclink' href='../src/permutohedron/src/lib.rs.html#38-50' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-23' class='srclink' href='../src/permutohedron/src/lib.rs.html#36-48' title='goto source code'>[src]</a></span></h1>
 <pre class='rust fn'>pub fn heap_recursive&lt;T, F&gt;(xs: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>T<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, f: F) <span class='where'>where F: <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>T<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>)</span></pre><div class='docblock'><p>Heap&#39;s algorithm for generating permutations, recursive version.</p>
 
 <p>The recursive algorithm supports slices of any size (even though
 only a small number of elements is practical), and is generally
 a bit faster than the iterative version.</p>
 
-<h2 id='example' class='section-header'><a href='#example'>Example</a></h2>
 <pre class='rust rust-example-rendered'>
 <span class='kw'>use</span> <span class='ident'>permutohedron</span>::<span class='ident'>heap_recursive</span>;
 
