@@ -1,5 +1,27 @@
 /// Permute a slice into its next or previous permutation (in lexical order).
 ///
+/// ## Example
+///
+/// ```
+/// use permutohedron::LexicalPermutation;
+///
+/// let mut data = [1, 2, 3];
+/// let mut permutations = Vec::new();
+///
+/// loop {
+///     permutations.push(data.to_vec());
+///     if !data.next_permutation() {
+///         break;
+///     }
+/// }
+///
+/// assert_eq!(permutations, &[&[1, 2, 3], &[1, 3, 2],
+///                            &[2, 1, 3], &[2, 3, 1],
+///                            &[3, 1, 2], &[3, 2, 1]]);
+///
+/// // `data` has been mutated in-place:
+/// assert_eq!(data, [3, 2, 1]);
+/// ```
 pub trait LexicalPermutation {
     /// Return `true` if the slice was permuted, `false` if it is already
     /// at the last ordered permutation.
