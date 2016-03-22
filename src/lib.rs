@@ -22,8 +22,6 @@ mod lexical;
 /// only a small number of elements is practical), and is generally
 /// a bit faster than the iterative version.
 ///
-/// ## Example
-///
 /// ```
 /// use permutohedron::heap_recursive;
 ///
@@ -93,8 +91,6 @@ pub const MAXHEAP: usize = 16;
 /// An iterative method of generating all permutations of a sequence.
 ///
 /// Note that for *n* elements there are *n!* (*n* factorial) permutations.
-///
-/// ## Example
 ///
 /// ```
 /// use permutohedron::Heap;
