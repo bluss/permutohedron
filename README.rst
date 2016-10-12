@@ -6,7 +6,7 @@ Generate permutations of sequences.
 
 Please read the `API documentation here`__
 
-__ http://bluss.github.io/permutohedron/
+__ https://docs.rs/permutohedron/
 
 |build_status|_ |crates|_
 
@@ -23,6 +23,11 @@ How to use with cargo::
 
 Recent Changes
 --------------
+
+- 0.2.2
+
+  - Add trait ``ControlFlow`` and allow optionally terminating ``heap_recursive``
+    early.
 
 - 0.2.1
 
