@@ -15,12 +15,20 @@ use std::marker::PhantomData;
 pub use lexical::LexicalPermutation;
 
 mod lexical;
+#[macro_use]
+pub mod control;
+
+use control::ControlFlow;
 
 /// Heap's algorithm for generating permutations, recursive version.
 ///
 /// The recursive algorithm supports slices of any size (even though
 /// only a small number of elements is practical), and is generally
 /// a bit faster than the iterative version.
+///
+/// The closure `f` may return either `()` to simply run through all
+/// permutations, or a `Control` value that permits breaking the
+/// iteration early.
 ///
 /// ```
 /// use permutohedron::heap_recursive;
@@ -33,15 +41,17 @@ mod lexical;
 ///
 /// assert_eq!(permutations.len(), 720);
 /// ```
-pub fn heap_recursive<T, F>(xs: &mut [T], mut f: F) where F: FnMut(&mut [T])
+pub fn heap_recursive<T, F, C>(xs: &mut [T], mut f: F) -> C
+    where F: FnMut(&mut [T]) -> C,
+          C: ControlFlow,
 {
     match xs.len() {
         0 | 1 => f(xs),
         2 => {
             // [1, 2], [2, 1]
-            f(xs);
+            try_control!(f(xs));
             xs.swap(0, 1);
-            f(xs);
+            f(xs)
         }
         n => heap_unrolled_(n, xs, &mut f),
     }
@@ -51,33 +61,34 @@ pub fn heap_recursive<T, F>(xs: &mut [T], mut f: F) where F: FnMut(&mut [T])
 // i.e. don't swap the same items (for example index 0) every time.
 
 /// Unrolled version of heap's algorithm due to Sedgewick
-fn heap_unrolled_<T, F>(n: usize, xs: &mut [T], f: &mut F)
-    where F: FnMut(&mut [T])
+fn heap_unrolled_<T, F, C>(n: usize, xs: &mut [T], f: &mut F) -> C
+    where F: FnMut(&mut [T]) -> C,
+          C: ControlFlow,
 {
     debug_assert!(n >= 3);
     match n {
         3 => {
             // [1, 2, 3], [2, 1, 3], [3, 1, 2], [1, 3, 2], [2, 3, 1], [3, 2, 1]
-            f(xs);
+            try_control!(f(xs));
             xs.swap(0, 1);
-            f(xs);
+            try_control!(f(xs));
             xs.swap(0, 2);
-            f(xs);
+            try_control!(f(xs));
             xs.swap(0, 1);
-            f(xs);
+            try_control!(f(xs));
             xs.swap(0, 2);
-            f(xs);
+            try_control!(f(xs));
             xs.swap(0, 1);
-            f(xs);
+            f(xs)
         }
         n => {
             for i in 0..n - 1 {
-                heap_unrolled_(n - 1, xs, f);
+                try_control!(heap_unrolled_(n - 1, xs, f));
                 let j = if n % 2 == 0 { i } else { 0 };
                 // One swap *between* each iteration.
                 xs.swap(j, n - 1);
             }
-            heap_unrolled_(n - 1, xs, f);
+            heap_unrolled_(n - 1, xs, f)
         }
     }
 }
@@ -207,6 +218,8 @@ pub fn factorial(n: usize) -> usize {
 #[cfg(all(test, feature = "std"))]
 mod tests {
     use super::*;
+    use control::Control;
+
     #[test]
     fn first_and_reset() {
         let mut data = [1, 2, 3];
@@ -286,5 +299,20 @@ mod tests {
             assert!(permutations.iter().all(|perm| perm.len() == n));
             assert!(permutations.iter().all(|perm| (1..n + 1).all(|i| perm.iter().position(|elt| *elt == i).is_some())));
         }
+    }
+
+    #[test]
+    fn permutations_break() {
+        let mut data = [0; 8];
+        let mut i = 0;
+        heap_recursive(&mut data, |_perm| {
+            i += 1;
+            if i >= 10_000 {
+                Control::Break(i)
+            } else {
+                Control::Continue
+            }
+        });
+        assert_eq!(i, 10_000);
     }
 }
