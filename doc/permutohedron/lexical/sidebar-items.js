@@ -1,1 +1,0 @@
-initSidebarItems({"trait":[["LexicalPermutation","Permute a slice into its next or previous permutation (in lexical order)."]]});
