@@ -24,6 +24,10 @@ How to use with cargo::
 Recent Changes
 --------------
 
+- 0.2.4
+
+  - Document a panic case in ``Heap::new`` that was not mentioned before
+
 - 0.2.3
 
   - Add license files to the repo and package, thanks to @ignatenkobrain
