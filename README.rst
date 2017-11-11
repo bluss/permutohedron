@@ -24,6 +24,10 @@ How to use with cargo::
 Recent Changes
 --------------
 
+- 0.2.3
+
+  - Add license files to the repo and package, thanks to @ignatenkobrain
+
 - 0.2.2
 
   - Add trait ``ControlFlow`` and allow optionally terminating ``heap_recursive``

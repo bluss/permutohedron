@@ -1,6 +1,6 @@
 [package]
 name = "permutohedron"
-version = "0.2.2"
+version = "0.2.3"
 authors = ["bluss"]
 
 license = "MIT/Apache-2.0"
@@ -17,3 +17,6 @@ debug = true
 [features]
 std = []
 default = ["std"]
+
+[package.metadata.release]
+no-dev-version = true
