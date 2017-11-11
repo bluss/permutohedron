@@ -133,6 +133,12 @@ impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
     where Data: AsMut<[T]>
 {
     /// Create a new `Heap`.
+    ///
+    /// ***Panics*** if the number of elements is too large (see `MAXHEAP`)
+    ///
+    /// The `heap_recursive` function has no length limit, but
+    /// note that for *n* elements there are *n!* (*n* factorial) permutations,
+    /// which gets impractical for surprisingingly small values of *n* anyway.
     pub fn new(data: &'a mut Data) -> Self {
         assert!(data.as_mut().len() <= MAXHEAP);
         Heap {
